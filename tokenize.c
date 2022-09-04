@@ -7,6 +7,7 @@
  *
  * Return: pointer to an array of pointers to the tokens
  */
+
 char **tokenize(char *buffer, char *delimiter)
 {
 	char **tokens = NULL;
