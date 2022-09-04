@@ -7,6 +7,7 @@
  *
  * Return: 0 on succcess, 1 on failure
  */
+
 int path_execute(char *command, vars_t *vars)
 {
 	pid_t child_pid;
