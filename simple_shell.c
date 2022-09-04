@@ -9,6 +9,7 @@ unsigned int sig_flag;
  *
  * Return: void
  */
+
 static void sig_handler(int uuv)
 {
 	(void) uuv;
