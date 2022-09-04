@@ -6,6 +6,7 @@
  *
  * Return: number of chars printed or -1 on failure
  */
+
 ssize_t _puts(char *str)
 {
 	ssize_t num, len;
