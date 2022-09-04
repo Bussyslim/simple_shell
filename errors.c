@@ -7,6 +7,7 @@
  *
  * Return: void
  */
+
 void print_error(vars_t *vars, char *msg)
 {
 	char *count;
