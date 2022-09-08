@@ -3,6 +3,92 @@
 int status;
 
 /**
+ * _setenv - sets and environmental variable
+ * @name: name of the variable
+ * @value: value to set the variable to
+ *
+ * Return: 0 on success
+ */
+int _setenv(const char *name, const char *value)
+{
+	char **new_environ;
+	char *buffer;
+	char *buf_tmp;
+	char *element_ptr;
+	int len;
+
+	if (value == NULL)
+	{
+		write(STDERR_FILENO, "setenv: no value given\n", 23);
+		status = 2;
+		return (SKIP_FORK);
+	}
+
+	buffer = str_concat((char *)name, "=");
+
+	element_ptr = get_array_element(environ, buffer);
+
+	buf_tmp = str_concat(buffer, (char *)value);
+	free(buffer);
+	buffer = buf_tmp;
+
+	if (element_ptr == NULL)
+	{
+		len = list_len(environ, NULL);
+		new_environ = array_cpy(environ, len + 1);
+		new_environ[len - 1] = buffer;
+		new_environ[len] = NULL;
+		free_array(environ);
+		environ = new_environ;
+		return (SKIP_FORK);
+	}
+
+	len = list_len(environ, (char *)name);
+	free(environ[len]);
+	environ[len] = buffer;
+
+	status = 0;
+
+	return (SKIP_FORK);
+}
+
+/**
+ * _unsetenv - deletes an environmental variable
+ * @name: name of variable
+ *
+ * Return: 0 if successful
+ */
+int _unsetenv(const char *name)
+{
+	char **env_ptr;
+	char *buffer;
+	int len;
+
+	buffer = str_concat((char *)name, "=");
+	len = list_len(environ, buffer);
+	free(buffer);
+
+	if (len == -1)
+	{
+		write(STDERR_FILENO, "unsetenv: variable not found\n", 29);
+		status = 2;
+		return (SKIP_FORK);
+	}
+
+	env_ptr = environ + len;
+	free(*env_ptr);
+	while (*(env_ptr + 1) != NULL)
+	{
+		*env_ptr = *(env_ptr + 1);
+		env_ptr++;
+	}
+	*env_ptr = NULL;
+	status = 0;
+
+	return (SKIP_FORK);
+}
+
+/**
  * change_dir - changes the current working directory
  * @name: name of directory to change to
  *
@@ -124,5 +210,26 @@ int alias_func(char **args, int to_free)
 		return (SKIP_FORK);
 
 	status = 0;
+	return (SKIP_FORK);
+}
+
+/**
+ * print_env - prints the environment
+ *
+ * Return: TRUE
+ */
+int print_env(void)
+{
+	char **ptr = environ;
+
+	while (*ptr != NULL)
+	{
+		write(STDOUT_FILENO, *ptr, _strlen(*ptr));
+		write(STDOUT_FILENO, "\n", 1);
+		ptr++;
+	}
+
+	status = 0;
+
 	return (SKIP_FORK);
 }
